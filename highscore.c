@@ -47,7 +47,7 @@ struct mode *highscore_mode;
 struct score_entry {
   int  score, level;
   time_t  date;
-  char  name [MAX_NAME_CHARS];
+  char  name [MAX_NAME_CHARS+1];
   int  new;
 };
 static  struct score_entry  highscore [HIGHSCORE_SLOTS];
