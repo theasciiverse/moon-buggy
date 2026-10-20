@@ -42,8 +42,8 @@ resize_ground (int clear_it)
 void
 print_ground (void)
 {
-  mvwaddnstr (moon, LINES-4, 0, ground2, ground_width);
-  mvwaddnstr (moon, LINES-3, 0, ground1, ground_width);
+  moon_addnstr (LINES-4, 0, ground2, ground_width);
+  moon_addnstr (LINES-3, 0, ground1, ground_width);
   wnoutrefresh (moon);
 }
 

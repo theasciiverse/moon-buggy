@@ -67,7 +67,7 @@ initialise_buggy (void)
   int  y;
 
   state = sz_empty;
-  for (y=5; y<9; ++y)  mvwaddstr (moon, LINES-y, car_x, "       ");
+  for (y=5; y<9; ++y)  moon_addstr (LINES-y, car_x, "       ");
   car_x = car_base;
   car_y = state->y;
   wnoutrefresh (moon);
@@ -80,9 +80,9 @@ print_buggy (void)
   int  y = state->y;
 
   if (y < car_y) {
-    mvwaddstr (moon, LINES-car_y-1, car_x, "       ");
+    moon_addstr (LINES-car_y-1, car_x, "       ");
   } else if (y > car_y) {
-    mvwaddstr (moon, LINES-car_y, car_x, "       ");
+    moon_addstr (LINES-car_y, car_x, "       ");
   }
   car_y = y;
 
@@ -90,18 +90,18 @@ print_buggy (void)
         in the following lines.
 */
   if (n==car_NORMAL)  {
-    mvwaddstr (moon, LINES-y-1, car_x, image[n+nextG][0]);
-    mvwaddstr (moon, LINES-y, car_x, image[n+nextG][1]);
+    moon_addstr (LINES-y-1, car_x, image[n+nextG][0]);
+    moon_addstr (LINES-y, car_x, image[n+nextG][1]);
   } else {
-    mvwaddstr (moon, LINES-y-1, car_x, image[n][0]);
-    mvwaddstr (moon, LINES-y, car_x, image[n][1]);
+    moon_addstr (LINES-y-1, car_x, image[n][0]);
+    moon_addstr (LINES-y, car_x, image[n][1]);
   }
   nextG++; if (nextG>3) nextG=0;
 
 
   if (n == car_BROKEN) {
-    if (ground2[car_x+1] == ' ')  mvwaddch (moon, LINES-4, car_x+1, 'o');
-    if (ground2[car_x+5] == ' ')  mvwaddch (moon, LINES-4, car_x+5, 'o');
+    if (ground2[car_x+1] == ' ')  moon_addch (LINES-4, car_x+1, 'o');
+    if (ground2[car_x+5] == ' ')  moon_addch (LINES-4, car_x+5, 'o');
   }
   wnoutrefresh (moon);
 }
@@ -111,8 +111,8 @@ shift_buggy (int dx)
 /* Horizontally shift the buggy by the amount DX.
  * Positive values of dx indicate a shift to the right.  */
 {
-  mvwaddstr (moon, LINES-car_y-1, car_x, "       ");
-  mvwaddstr (moon, LINES-car_y, car_x, "       ");
+  moon_addstr (LINES-car_y-1, car_x, "       ");
+  moon_addstr (LINES-car_y, car_x, "       ");
   car_x += dx;
   print_buggy ();
 }
@@ -129,7 +129,7 @@ wheel_handler (game_time t, void *client_data)
   int  wheel_crash;
 
   wheel_crash = (wheel_x<car_x && wheel_y==LINES-5 && ground2[wheel_x]==' ');
-  if (wheel_x < car_x)  mvwaddch (moon, wheel_y, wheel_x, ' ');
+  if (wheel_x < car_x)  moon_addch (wheel_y, wheel_x, ' ');
   wheel_x -= 1;
   switch (car_x - wheel_x) {
   case 1:
@@ -149,7 +149,7 @@ wheel_handler (game_time t, void *client_data)
     break;
   }
   if (wheel_x >= 0 && ! wheel_crash) {
-    mvwaddch (moon, wheel_y, wheel_x, 'o');
+    moon_addch (wheel_y, wheel_x, 'o');
     add_event (t+TICK(2.3), wheel_handler, NULL);
   } else {
     crash_detected = 1000;

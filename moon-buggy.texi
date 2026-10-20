@@ -132,6 +132,11 @@ of "write" or "finger".
 @itemx --no-title
 skips the title screen.
 
+@item -r
+@itemx --right
+drives to the right: the surface is drawn mirrored, so the buggy
+faces right and the craters come from the right.
+
 @item -s
 @itemx --show-scores
 shows the current highscore list and exits.

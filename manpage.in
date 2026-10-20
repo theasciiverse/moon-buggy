@@ -7,7 +7,7 @@
 .SH NAME
 moon\-buggy \- drive some car across the moon
 .SH SYNOPSIS
-moon\-buggy [\-hnsV] @C@[\-\-help] [\-\-no\-title] [\-\-show\-scores] [\-\-version]
+moon\-buggy [\-hnrsV] @C@[\-\-help] [\-\-no\-title] [\-\-right] [\-\-show\-scores] [\-\-version]
 .SH DESCRIPTION
 .B Moon\-buggy
 is a simple character graphics game, where you drive some kind of car
@@ -27,6 +27,10 @@ of "write" or "finger".
 .TP
 .Op n no\-title
 skips the title screen.
+.TP
+.Op r right
+drives to the right: the surface is drawn mirrored, so the buggy
+faces right and the craters come from the right.
 .TP
 .Op s show\-scores
 shows the current highscore list and exits.

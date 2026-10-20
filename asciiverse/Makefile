@@ -13,7 +13,7 @@ SED ?= sed
 SRCS = main.c mode.c title.c pager.c game.c level.c ground.c buggy.c \
 	laser.c meteor.c highscore.c realname.c queue.c vclock.c date.c \
 	persona.c signal.c keyboard.c terminal.c cursor.c random.c error.c \
-	xmalloc.c xstrdup.c hpath.c
+	xmalloc.c xstrdup.c hpath.c mirror.c
 BUILD ?= build
 OBJS = $(SRCS:%.c=$(BUILD)/%.o)
 

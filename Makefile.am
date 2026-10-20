@@ -13,7 +13,7 @@ moon_buggy_SOURCES = moon-buggy.h main.c mode.c title.c pager.c copying.h \
 	game.c level.c ground.c buggy.c buggy.h laser.c meteor.c highscore.c \
 	realname.c queue.c vclock.c date.c persona.c signal.c keyboard.c \
 	terminal.c cursor.c random.c error.c xmalloc.c xstrdup.c darray.h \
-	hpath.c
+	hpath.c mirror.c
 moon_buggy_LDADD = @CURSES_LIBS@
 
 info_TEXINFOS = moon-buggy.texi

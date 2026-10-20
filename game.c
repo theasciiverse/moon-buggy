@@ -53,7 +53,7 @@ print_game_over (int blink)
 #ifdef A_BLINK
   if (blink)  wattron (moon, A_BLINK);
 #endif
-  mvwaddstr (moon, LINES-11, car_base-1, "GAME OVER");
+  moon_addtext (LINES-11, car_base-1, "GAME OVER");
 #ifdef A_BLINK
   if (blink)  wattroff (moon, A_BLINK);
 #endif

@@ -135,12 +135,13 @@ main (int argc, char **argv)
     { "help", no_argument, 0, 'h' },
     { "mesg", no_argument, 0, 'm' },
     { "no-title", no_argument, 0, 'n' },
+    { "right", no_argument, 0, 'r' },
     { "show-scores", no_argument, 0, 's' },
     { "version", no_argument, 0, 'V' },
     { NULL, 0, NULL, 0}
   };
 #endif
-#define MB_SHORT_OPTIONS "chmnsV"
+#define MB_SHORT_OPTIONS "chmnrsV"
   int  help_flag = 0;
   int  highscore_flag = 0;
   int  title_flag = 1;
@@ -179,6 +180,9 @@ main (int argc, char **argv)
       break;
     case 'n':
       title_flag = 0;
+      break;
+    case 'r':
+      mirrored = 1;
       break;
     case 's':
       highscore_flag = 1;
@@ -221,6 +225,7 @@ the file named COPYING or press `c' at Moon-Buggy's title screen.");
     fputs (OPT("-m","--mesg         ") "imply the effect of \"mesg n\"\n",
            out);
     fputs (OPT("-n","--no-title     ") "omit the title screen\n", out);
+    fputs (OPT("-r","--right        ") "drive to the right\n", out);
     fputs (OPT("-s","--show-scores  ") "only show the highscore list\n", out);
     fputs (OPT("-V","--version      ") "show the version number and exit\n\n",
            out);

@@ -207,6 +207,13 @@ extern  void  fatal (const char *format, ...)
 extern  void  fatal (const char *format, ...);
 #endif
 
+/* from "mirror.c" */
+extern  int  mirrored;
+extern  void  moon_addch (int y, int x, int c);
+extern  void  moon_addnstr (int y, int x, const char *str, int n);
+extern  void  moon_addstr (int y, int x, const char *str);
+extern  void  moon_addtext (int y, int x, const char *str);
+
 /* from "xmalloc.c" */
 extern  void *xmalloc (size_t size);
 extern  void *xrealloc (void *ptr, size_t size);

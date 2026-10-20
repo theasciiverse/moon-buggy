@@ -37,8 +37,7 @@ beam_handler (game_time t, void *client_data)
       b->left = x;
       if (b->left > car_x - 2)  b->left = car_x - 2;
     }
-    wmove (moon, LINES-b->y, b->left);
-    for (i=0; i<b->right-b->left; ++i)  waddch (moon, '-');
+    for (i=0; i<b->right-b->left; ++i)  moon_addch (LINES-b->y, b->left+i, '-');
     b->state = bs_RUN;
     add_event (t+TICK(0.25), beam_handler, client_data);
     break;
@@ -46,8 +45,8 @@ beam_handler (game_time t, void *client_data)
     if (b->count > 0) {
       b->left -= 1;
       b->right -= 1;
-      mvwaddch (moon, LINES-b->y, b->left, '-');
-      mvwaddch (moon, LINES-b->y, b->right, ' ');
+      moon_addch (LINES-b->y, b->left, '-');
+      moon_addch (LINES-b->y, b->right, ' ');
       if (b->y == 5 && meteor_laser_hit (b->left, b->right)) {
         b->count = 0;
       } else {
@@ -55,9 +54,8 @@ beam_handler (game_time t, void *client_data)
       }
       add_event (t+TICK(0.25), beam_handler, client_data);
     } else {
-      wmove (moon, LINES-b->y, b->left);
-      for (i=0; i<2; ++i)  waddch (moon, '*');
-      for (i=2; i<b->right-b->left; ++i)  waddch (moon, ' ');
+      for (i=0; i<2; ++i)  moon_addch (LINES-b->y, b->left+i, '*');
+      for (i=2; i<b->right-b->left; ++i)  moon_addch (LINES-b->y, b->left+i, ' ');
       b->right = b->left+2;
       b->state = bs_CLOUD;
       b->count = 3;
@@ -67,22 +65,21 @@ beam_handler (game_time t, void *client_data)
     break;
   case bs_CLOUD:
     if (b->count > 1) {
-      mvwaddch (moon, LINES-b->y, b->left, ' ');
-      mvwaddch (moon, LINES-b->y, b->right, '*');
+      moon_addch (LINES-b->y, b->left, ' ');
+      moon_addch (LINES-b->y, b->right, '*');
       b->left += 1;
       b->right += 1;
       b->count -= 1;
       add_event (t+TICK(1), beam_handler, client_data);
     } else if (b->count > 0) {
-      mvwaddch (moon, LINES-b->y, b->left, ' ');
+      moon_addch (LINES-b->y, b->left, ' ');
       b->left += 1;
       b->right += 1;
-      for (i=b->left; i<b->right; ++i)  mvwaddch (moon, LINES-b->y, i, '.');
+      for (i=b->left; i<b->right; ++i)  moon_addch (LINES-b->y, i, '.');
       b->count -= 1;
       add_event (t+TICK(1), beam_handler, client_data);
     } else {
-      wmove (moon, LINES-b->y, b->left);
-      for (i=0; i<2; ++i)  waddch (moon, ' ');
+      for (i=0; i<2; ++i)  moon_addch (LINES-b->y, b->left+i, ' ');
       DA_REMOVE_VALUE (beam_table, struct beam *, b);
       free (b);
     }
@@ -119,7 +116,7 @@ extinguish_laser (void)
     struct beam *b = beam_table.data[j];
     int  i;
 
-    for (i=b->left; i<b->right; ++i)  mvwaddch (moon, LINES-b->y, i, ' ');
+    for (i=b->left; i<b->right; ++i)  moon_addch (LINES-b->y, i, ' ');
     free (b);
   }
   DA_CLEAR (beam_table);

@@ -40,7 +40,7 @@ scroll_one_meteor (struct meteor *m)
   if (m->state == ms_START) {
     m->state = ms_BIG;
   } else {
-    mvwaddch (moon, BASELINE, m->x, ' ');
+    moon_addch (BASELINE, m->x, ' ');
   }
 
   m->x += 1;
@@ -55,7 +55,7 @@ scroll_one_meteor (struct meteor *m)
   }
   if (car_meteor_hit (m->x))  return  1;
 
-  mvwaddch (moon, BASELINE, m->x, m_image[m->state]);
+  moon_addch (BASELINE, m->x, m_image[m->state]);
   return  0;
 }
 
@@ -103,7 +103,7 @@ remove_meteors (void)
   if (meteor_table.used > 0)  wnoutrefresh (moon);
   for (j=0; j<meteor_table.used; ++j) {
     struct meteor *m = meteor_table.data[j];
-    mvwaddch (moon, BASELINE, m->x, ' ');
+    moon_addch (BASELINE, m->x, ' ');
     free (m);
   }
   DA_CLEAR (meteor_table);
@@ -125,13 +125,13 @@ meteor_laser_hit (int x0, int x1)
       m->state += 1;
       wnoutrefresh (moon);
       if (m->state > ms_SMALL) {
-        mvwaddch (moon, BASELINE, m->x, ' ');
+        moon_addch (BASELINE, m->x, ' ');
         score_meteor (m);
         remove_client_data (m);
         DA_REMOVE_VALUE (meteor_table, struct meteor *, m);
         free (m);
       } else {
-        mvwaddch (moon, BASELINE, m->x, m_image[m->state]);
+        moon_addch (BASELINE, m->x, m_image[m->state]);
       }
       return  x;
     }
@@ -151,7 +151,7 @@ meteor_car_hit (int x0, int x1)
   for (j=meteor_table.used-1; j>=0; --j) {
     struct meteor *m = meteor_table.data[j];
     if (m->x >= x0 && m->x < x1) {
-      mvwaddch (moon, BASELINE, m->x, ' ');
+      moon_addch (BASELINE, m->x, ' ');
       remove_client_data (m);
       DA_REMOVE_VALUE (meteor_table, struct meteor *, m);
       free (m);
