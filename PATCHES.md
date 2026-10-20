@@ -53,6 +53,14 @@ the spirit of the game".
   for SIGINT and SIGTERM; no setuid personas, passwd entries, fcntl locks
   or "mesg n"; the name prompt offers `%USERNAME%`.
 
+- **`-r`, `--right`: drive to the right** (David's request, 2026-10-20),
+  as in Irem's Moon Patrol. The game runs as before; everything drawn on
+  the moon's surface is mirrored on its way to the screen (mirror.c):
+  columns from the other edge, strings reversed, `( ) / \ < > [ ] { }`
+  swapped, so the buggy faces right and its wheels turn the right way;
+  "GAME OVER" moves across but reads as before. Off by default. Listed in
+  `--help`, the man page and the manual; ASan-clean over a soak with it.
+
 Upstream's play is unchanged: the screen already fills the terminal and
 follows resizes, and the buggy sits 12 columns from the right of the
 first 80 (column 68 on any wider terminal), as it always has.
