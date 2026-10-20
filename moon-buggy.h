@@ -142,6 +142,9 @@ extern  void  block_all (void);
 extern  void  unblock (void);
 extern  void  initialise_signals (void);
 extern  int  handle_signals (void);
+#ifdef _WIN32
+extern  void  screen_resized (void);
+#endif
 
 /* from "keyboard.c" */
 enum mb_key {

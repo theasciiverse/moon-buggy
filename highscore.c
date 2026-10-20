@@ -17,7 +17,20 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#ifdef _WIN32
+/* no group or other permissions on Windows */
+#ifndef S_IRGRP
+#define S_IRGRP 0
+#endif
+#ifndef S_IROTH
+#define S_IROTH 0
+#endif
+#ifndef S_IWGRP
+#define S_IWGRP 0
+#endif
+#else
 #include <pwd.h>
+#endif
 #include <assert.h>
 #if HAVE_ERRNO_H
 #include <errno.h>
@@ -76,6 +89,11 @@ local_score_file_name (void)
 /* Return the local score file's name.
  * The caller is reponsible for freeing the returned string via `free'.  */
 {
+#ifdef _WIN32
+  const char *home = getenv ("USERPROFILE");
+
+  return  compose_filename (home && home[0] ? home : NULL, "." SCORE_FILE);
+#else
   uid_t  me = getuid ();
   struct passwd *my_passwd = getpwuid (me);
 
@@ -84,6 +102,7 @@ local_score_file_name (void)
   } else {
     return  compose_filename (NULL, "." SCORE_FILE);
   }
+#endif
 }
 
 static char *
@@ -364,6 +383,8 @@ do_open (const char *name, int flags, int lock, int must_succeed)
   }
   umask (mask);
 
+#ifndef _WIN32
+  /* (Windows has no fcntl locks; there one player uses the file.)  */
   if (fd != -1 && ! lock_done) {
     struct flock  l;
     int  res;
@@ -380,6 +401,7 @@ do_open (const char *name, int flags, int lock, int must_succeed)
       fatal ("Cannot lock score file \"%s\": %s", name, strerror (errno));
     }
   }
+#endif
 
   return  fd;
 }

@@ -15,7 +15,9 @@
 #include <ctype.h>
 #include <sys/types.h>
 #include <unistd.h>
+#ifndef _WIN32
 #include <pwd.h>
+#endif
 #include <assert.h>
 
 #if defined(__hp9000s800)
@@ -34,6 +36,11 @@ get_real_user_name (char *buffer, size_t size)
   int  res, start;
   char *tmp;
 
+#ifdef _WIN32
+  if (buffer[0] == '\0' && getenv ("USERNAME")) {
+    strncpy (buffer, getenv ("USERNAME"), size);
+  }
+#else
   if (buffer[0] == '\0') {
     uid_t me = geteuid ();
     struct passwd *my_passwd = getpwuid (me);
@@ -49,6 +56,7 @@ get_real_user_name (char *buffer, size_t size)
     }
   }
 
+#endif
   werase (message);
   if (buffer[0] == '\0') {
     waddstr (message, "please enter your name: ");

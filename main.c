@@ -96,6 +96,9 @@ void
 allocate_windows (void)
 /* Create the curses windows.  */
 {
+#ifdef _WIN32
+  if (! stdscr)
+#endif
   initscr ();
 
   moon = newwin (LINES-2, 0, 0, 0);

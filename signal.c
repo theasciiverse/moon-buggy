@@ -27,6 +27,28 @@ static struct {
 
 static volatile  sig_atomic_t  signal_arrived;
 
+#ifdef _WIN32
+
+/* Windows has `signal' for SIGINT and SIGTERM, but no signal masks.  */
+
+void
+block_all (void)
+{
+}
+
+void
+unblock (void)
+{
+}
+
+static void
+install_signal (int signum, RETSIGTYPE (*handler) (int))
+{
+  signal (signum, handler);
+}
+
+#else /* not _WIN32 */
+
 static  sigset_t  full_set, old_sigset;
 
 
@@ -58,6 +80,8 @@ install_signal (int signum, RETSIGTYPE (*handler) (int))
   assert (ret == 0);
 }
 
+#endif /* not _WIN32 */
+
 static RETSIGTYPE
 generic_handler (int signum)
 /* Interrupt handlers shouldn't do much.  So we just note that the
@@ -85,12 +109,14 @@ my_signal (int signum, void (*handler)(int), int ignore_test)
 {
   struct sig_info *info;
 
+#ifndef _WIN32
   if (ignore_test) {
     struct sigaction  action;
 
     sigaction (signum, NULL, &action);
     if (action.sa_handler == SIG_IGN)  return;
   }
+#endif
 
   DA_ADD_EMPTY (sig_info_table, struct sig_info, info);
   info->signum = signum;
@@ -114,6 +140,7 @@ termination_handler (int signum)
   raise (signum);
 }
 
+#ifndef _WIN32
 static void
 tstp_handler (int signum)
 {
@@ -136,6 +163,9 @@ cont_handler (int signum)
   clock_thaw ();
 }
 
+#endif /* not _WIN32 */
+
+#ifdef SIGWINCH
 static void
 winch_handler (int signum)
 {
@@ -152,6 +182,28 @@ winch_handler (int signum)
   mode_redraw ();
   clock_thaw ();
 }
+#endif
+
+#ifdef _WIN32
+void
+screen_resized (void)
+/* PDCurses reports a resized console as the key KEY_RESIZE, not as a
+ * signal: lay the screen out again for the new size, as `winch_handler'
+ * does.  */
+{
+  clock_freeze ();
+  resize_term (0, 0);
+  delwin (moon);
+  delwin (status);
+  delwin (message);
+  clear ();
+  refresh ();
+  allocate_windows ();
+  hide_cursor ();
+  mode_redraw ();
+  clock_thaw ();
+}
+#endif
 
 /************************************************************
  * The outside-visible entry point
@@ -162,15 +214,19 @@ initialise_signals (void)
 {
   DA_INIT (sig_info_table, struct sig_info);
   my_signal (SIGINT, termination_handler, 1);
-  my_signal (SIGHUP, termination_handler, 1);
   my_signal (SIGTERM, termination_handler, 1);
+#ifndef _WIN32
+  my_signal (SIGHUP, termination_handler, 1);
   my_signal (SIGCONT, cont_handler, 0);
   my_signal (SIGTSTP, tstp_handler, 0);
+#endif
 #ifdef SIGWINCH
   my_signal (SIGWINCH, winch_handler, 0);
 #endif
 
+#ifndef _WIN32
   sigfillset (&full_set);
+#endif
 }
 
 int

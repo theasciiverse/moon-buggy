@@ -74,6 +74,41 @@ current_time (void)
  * wait for timeouts or keyboard input
  */
 
+#ifdef _WIN32
+
+/* Windows has no `select' on the console: wait for a key with curses'
+ * own timeout, in steps of at most a tenth of a second so that Ctrl-C
+ * (a signal handled in `handle_signals') is noticed, and put the key
+ * back for `read_key'.  A resized console arrives as KEY_RESIZE.  */
+
+static int
+my_select (struct timeval *timeout)
+{
+  double  end = timeout ? vclock () + timeout->tv_sec + 1e-6 * timeout->tv_usec : 0;
+  int  key;
+
+  do {
+    double  left = timeout ? end - vclock () : 0.1;
+    int  ms = left > 0.1 ? 100 : left > 0 ? (int)(1000 * left + 0.5) : 0;
+
+    if (handle_signals ())  return -1;
+    wtimeout (moon, ms);
+    key = wgetch (moon);
+    wtimeout (moon, -1);
+    if (key == KEY_RESIZE) {
+      screen_resized ();
+      return -1;
+    }
+    if (key != ERR) {
+      ungetch (key);
+      return 1;
+    }
+  } while (! timeout || vclock () < end);
+  return 0;
+}
+
+#else /* not _WIN32 */
+
 static int
 my_select (struct timeval *timeout)
 /* Wait until input is ready on stdin or a timeout is reached.
@@ -101,6 +136,8 @@ my_select (struct timeval *timeout)
   }
   return  res;
 }
+
+#endif /* not _WIN32 */
 
 static int
 key_ready (void)
@@ -162,6 +199,9 @@ static void
 drain_input (void)
 /* Discard all data from the input queue.  */
 {
+#ifdef _WIN32
+  flushinp ();
+#else
   char  buffer [16];
   int  oldflags;
 
@@ -173,6 +213,7 @@ drain_input (void)
   while (read (0, buffer, 16) == 16)
     ;
   fcntl (0, F_SETFL, oldflags);
+#endif
 }
 
 void

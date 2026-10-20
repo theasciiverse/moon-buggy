@@ -22,6 +22,28 @@
 #include "moon-buggy.h"
 
 
+#ifdef _WIN32
+
+/* Windows has no setuid or setgid programs: one persona.  */
+
+void
+initialise_persona (void)
+{
+}
+
+int
+is_setgid (void)
+{
+  return  0;
+}
+
+void
+set_persona (enum persona  pers)
+{
+}
+
+#else /* not _WIN32 */
+
 /* which method of uid handling is used?  */
 static  enum { m_NONE, m_SAVED, m_EXCH }  method = m_NONE;
 
@@ -129,3 +151,5 @@ set_persona (enum persona  pers)
   }
   current = pers;
 }
+
+#endif /* not _WIN32 */

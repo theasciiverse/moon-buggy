@@ -46,6 +46,7 @@ term_prepare (int mesg_n_flag)
   assert (! term_mode_valid);
   if ( ! isatty (0) )  return;
 
+#ifndef _WIN32
   if (mesg_n_flag) {
     res = fstat (0, &st);
     if (res < 0)
@@ -59,6 +60,7 @@ term_prepare (int mesg_n_flag)
     if (res < 0)
       fatal ("Cannot set terminal permissions: %s", strerror (errno));
   }
+#endif
 
 #if HAVE_TERMIOS_H
   res = tcgetattr (0, &settings);
@@ -100,10 +102,12 @@ term_restore (void)
   }
 #endif
 
+#ifndef _WIN32
   if (term_mode_valid) {
     term_mode_valid = 0;
     res = fchmod (0, term_mode);
     if (res < 0)
       fatal ("Cannot restore terminal permissions: %s", strerror (errno));
   }
+#endif
 }
