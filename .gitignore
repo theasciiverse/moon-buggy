@@ -33,3 +33,5 @@ build/
 /dist/
 !/asciiverse/Makefile
 !/asciiverse/config.h
+/build-win/
+*.exe
