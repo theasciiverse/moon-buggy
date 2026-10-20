@@ -91,6 +91,7 @@ global_score_file_name (void)
 /* Return the global score file's name.
  * The is reponsible for freeing the returned string via `free'.  */
 {
+  if (! score_dir)  return  local_score_file_name ();
   return  compose_filename (score_dir, SCORE_FILE);
 }
 

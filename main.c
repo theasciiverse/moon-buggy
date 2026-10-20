@@ -225,6 +225,7 @@ the file named COPYING or press `c' at Moon-Buggy's title screen.");
     exit (error_flag);
   }
 
+  init_score_dir ();
   init_rnd ();
 
   if (highscore_flag) {

@@ -215,5 +215,6 @@ extern  char *xstrndup (const char *str, size_t size);
 
 /* from "hpath.c" */
 extern  const char *score_dir;
+extern  void  init_score_dir (void);
 
 #endif /* FILE_MOON_BUGGY_H_SEEN */
