@@ -86,6 +86,9 @@ term_restore (void)
 
 #if HAVE_TERMIOS_H
   if (attributes_changed) {
+    /* Cleared first: if the terminal is gone (a hangup), `fatal' calls
+     * this function again on its way out.  */
+    attributes_changed = 0;
     res = tcgetattr (0, &settings);
     if (res < 0)
       fatal ("Cannot get terminal attributes: %s", strerror (errno));
@@ -98,9 +101,9 @@ term_restore (void)
 #endif
 
   if (term_mode_valid) {
+    term_mode_valid = 0;
     res = fchmod (0, term_mode);
     if (res < 0)
       fatal ("Cannot restore terminal permissions: %s", strerror (errno));
-    term_mode_valid = 0;
   }
 }
