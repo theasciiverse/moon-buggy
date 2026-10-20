@@ -28,3 +28,8 @@ config.status
 moon-buggy
 moon-buggy.6
 stamp-h1
+build/
+/stage/
+/dist/
+!/asciiverse/Makefile
+!/asciiverse/config.h
