@@ -94,3 +94,9 @@ played under Wine to game over, a high score entered and saved in
 `%APPDATA%\moon-buggy`; a resized console under Wine inside tmux did not
 redraw properly, which may be Wine's console, so resizing on real Windows
 is unchecked. macOS: not built here.
+
+## Ours
+
+- **How to play it, at the top of README.** A short note on installing and
+  starting it with av, or from a release archive; the original text follows
+  unchanged.
